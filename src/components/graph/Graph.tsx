@@ -13,7 +13,7 @@ import React, {
 import { IGraphConfig, IGraphProps, IGraphPropsNode } from "./Graph.types";
 import { NodeMap } from "./NodeMap";
 import { LinkMatrix } from "./LinkMatrix";
-import { throttle } from "lodash";
+import { clamp, throttle } from "lodash";
 import { mergeConfig } from "../../utils";
 import { DEFAULT_CONFIG } from "./graph.config";
 import { NodeModel } from "./NodeModel";
@@ -85,8 +85,8 @@ export const Graph: FC<IGraphProps> = (props: IGraphProps) => {
           node.x = (nodeMap.get(node.id.split('-')[1]).force.x ?? 0) * 0.5 + (nodeMap.get(node.id.split('-')[2]).force.x ?? 0) * 0.5;
           node.y = (nodeMap.get(node.id.split('-')[1]).force.y ?? 0) * 0.5 + (nodeMap.get(node.id.split('-')[2]).force.y ?? 0) * 0.5;
         } else {
-          node.x = Math.max(radius, Math.min(width - radius, node.x || radius));
-          node.y = Math.max(radius, Math.min(height - radius, node.y || radius));
+          node.x = clamp(node.x || radius, radius, width - radius);
+          node.y = clamp(node.y || radius, radius, height - radius);
         }
       });
       forceUpdate();
